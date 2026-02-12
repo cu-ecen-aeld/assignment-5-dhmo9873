@@ -4,13 +4,17 @@
 #
 ##############################################################
 
-AESD_ASSIGNMENTS_VERSION = b0edfd903f97cdc993650884560de9909599c8a9
+AESD_ASSIGNMENTS_VERSION = 8145364c778f59704ad0c29ae918b48a66732b2f
 AESD_ASSIGNMENTS_SITE = git@github.com:cu-ecen-aeld/assignment3-dhmo9873.git
 AESD_ASSIGNMENTS_SITE_METHOD = git
 AESD_ASSIGNMENTS_GIT_SUBMODULES = YES
 
 define AESD_ASSIGNMENTS_BUILD_CMDS
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) -C $(@D)/finder-app all
+
+	# Build aesdsocket
+	$(MAKE) CC="$(TARGET_CC)" LD="$(TARGET_LD)" -C $(@D)/server clean
+	$(MAKE) CC="$(TARGET_CC)" LD="$(TARGET_LD)" -C $(@D)/server	
 endef
 
 define AESD_ASSIGNMENTS_INSTALL_TARGET_CMDS
@@ -23,6 +27,12 @@ define AESD_ASSIGNMENTS_INSTALL_TARGET_CMDS
 	$(INSTALL) -m 0755 $(@D)/finder-app/writer $(TARGET_DIR)/usr/bin/
 	$(INSTALL) -m 0755 $(@D)/finder-app/finder.sh $(TARGET_DIR)/usr/bin/
 	$(INSTALL) -m 0755 $(@D)/finder-app/finder-test.sh $(TARGET_DIR)/usr/bin/
+
+	# Install aesdsocket binary
+	$(INSTALL) -m 0755 $(@D)/server/aesdsocket $(TARGET_DIR)/usr/bin/
+
+	# Install aesdsocket init script
+	$(INSTALL) -m 0755 $(@D)/server/aesdsocket-start-stop $(TARGET_DIR)/etc/init.d/S99aesdsocket	
 endef
 
 
