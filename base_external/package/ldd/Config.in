@@ -1,0 +1,4 @@
+config BR2_PACKAGE_LDD_ASSIGNMENTS
+    bool "ldd"
+    help
+      Includes LDD3 scull and misc-modules.
