@@ -3,27 +3,33 @@
 case "$1" in
     start)
         echo "Loading LDD modules..."
-        # 1. Load the hello module (This is already working for you)
+        /sbin/depmod -a
+
+        # 1. Load hello
         modprobe hello
 
-        # 2. Load scull binary, THEN run script to create /dev nodes
+        # 2. Load and setup scull
         modprobe scull
-        # We call the script but ignore its attempt to insmod (which will now fail harmlessly)
-        /usr/bin/scull_load > /dev/null 2>&1
+        # The scull_load script creates nodes, but we need to make sure it finds the major #
+        /usr/bin/scull_load
 
-        # 3. Load faulty binary, THEN run script to create /dev nodes
+        # 3. Load and setup faulty
         modprobe faulty
-        /usr/bin/module_load faulty > /dev/null 2>&1
+        # Manually create the faulty node so it's guaranteed to work
+        major=$(awk '$2=="faulty" {print $1}' /proc/devices)
+        if [ ! -z "$major" ]; then
+            rm -f /dev/faulty
+            mknod /dev/faulty c $major 0
+            chmod 666 /dev/faulty
+            echo "Device /dev/faulty created with major $major"
+        fi
         ;;
     stop)
-        echo "Unloading LDD modules..."
-        /usr/bin/module_unload faulty
-        /usr/bin/scull_unload
-        rmmod hello
+        # Standard cleanup
+        rmmod faulty scull hello 2>/dev/null
+        rm -f /dev/faulty /dev/scull[0-3]
         ;;
     *)
         echo "Usage: $0 {start|stop}"
         exit 1
 esac
-
-exit 0
