@@ -1,5 +1,5 @@
 LDD_ASSIGNMENTS_VERSION = 3af60251bd1ed17e6e7e062558b8b66b3e447593
-LDD_ASSIGNMENTS_SITE = git@github.com:cu-ecen-aeld/assignment7-dhmo9873.git
+LDD_ASSIGNMENTS_SITE = git@github.com:cu-ecen-aeld/assignment-7-dhmo9873.git
 LDD_ASSIGNMENTS_SITE_METHOD = git
 LDD_ASSIGNMENTS_GIT_SUBMODULES = YES
 

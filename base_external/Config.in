@@ -1,4 +1,4 @@
 menu "Project Base Packages"
 source "$BR2_EXTERNAL_PROJECT_BASE_PATH/package/Config.in"
-source "$BR2_EXTERNAL_PROJECT_BASE_PATH/package/ldd/Config.in"
+source "$BR2_EXTERNAL_PROJECT_BASE_PATH/package/ldd_assignments/Config.in"
 endmenu

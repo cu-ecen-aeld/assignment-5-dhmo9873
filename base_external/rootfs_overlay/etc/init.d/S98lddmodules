@@ -1,38 +1,29 @@
 #!/bin/sh
 
 case "$1" in
-  start)
-    echo "Loading LDD modules..."
-    
-    # 1. Load scull (uses a helper script or manual insmod)
-    # The assignment suggests using scull_load as a reference.
-    # We will use the standard path where Buildroot installs modules.
-    /usr/bin/scull_load
-    
-    # 2. Load faulty
-    /usr/bin/module_load faulty
-    
-    # 3. Load hello (personalized module) using modprobe
-    # modprobe looks in /lib/modules/$(uname -r)/
-    modprobe hello
-    ;;
-    
-  stop)
-    echo "Unloading LDD modules..."
-    
-    # Unload scull
-    /usr/bin/scull_unload
-    
-    # Unload faulty
-    /usr/bin/module_unload faulty
-    
-    # Unload hello
-    rmmod hello
-    ;;
-    
-  *)
-    echo "Usage: $0 {start|stop}"
-    exit 1
+    start)
+        echo "Loading LDD modules..."
+        # 1. Load the hello module (This is already working for you)
+        modprobe hello
+
+        # 2. Load scull binary, THEN run script to create /dev nodes
+        modprobe scull
+        # We call the script but ignore its attempt to insmod (which will now fail harmlessly)
+        /usr/bin/scull_load > /dev/null 2>&1
+
+        # 3. Load faulty binary, THEN run script to create /dev nodes
+        modprobe faulty
+        /usr/bin/module_load faulty > /dev/null 2>&1
+        ;;
+    stop)
+        echo "Unloading LDD modules..."
+        /usr/bin/module_unload faulty
+        /usr/bin/scull_unload
+        rmmod hello
+        ;;
+    *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
 esac
 
 exit 0
